@@ -1,0 +1,127 @@
+---
+title: Sistema de seguros - Diagrama de clases
+---
+classDiagram
+    direction TB
+
+    class Cliente {
+        -dni : str
+        -nombre : str
+        -apellido : str
+        -fecha_nacimiento : date
+        -telefono : str
+        -email : str
+        +/edad : int
+        +dni() str
+        +nombre() str
+        +apellido() str
+        +fecha_nacimiento() date
+        +telefono() str
+        +telefono(valor)
+        +email() str
+        +email(valor)
+        +validar_email(valor)$
+        +verDatos()
+    }
+
+    class Poliza {
+        +VIGENTE : str$
+        +VENCIDA : str$
+        +CANCELADA : str$
+        -numero : int
+        -fecha_inicio : date
+        -fecha_fin : date
+        -suma_asegurada : float
+        -estado : str
+        +numero() int
+        +fecha_inicio() date
+        +fecha_fin() date
+        +suma_asegurada() float
+        +estado() str
+        +cancelar()
+        +estado_actual() str
+        +esta_vigente() bool
+        +registrar_siniestro(siniestro)
+        +calcular_prima() float
+        +calcular_indemnizacion(monto_reclamado) float
+        +verDatos()
+    }
+
+    class PolizaAuto {
+        +TIPO : str$
+        +FRANQUICIA : float$
+        -patente : str
+        -marca : str
+        -modelo : str
+        -anio : int
+        +patente() str
+        +marca() str
+        +modelo() str
+        +anio() int
+        +calcular_prima() float
+        +calcular_indemnizacion(monto_reclamado) float
+        +verDatos()
+    }
+
+    class PolizaHogar {
+        +TIPO : str$
+        +PRECIO_M2 : int$
+        -direccion : str
+        -metros_cuadrados : int
+        +direccion() str
+        +metros_cuadrados() int
+        +calcular_prima() float
+        +calcular_indemnizacion(monto_reclamado) float
+        +verDatos()
+    }
+
+    class PolizaVida {
+        +TIPO : str$
+        -beneficiario : str
+        -edad_asegurado : int
+        +beneficiario() str
+        +edad_asegurado() int
+        +calcular_prima() float
+        +calcular_indemnizacion(monto_reclamado) float
+        +verDatos()
+    }
+
+    class Siniestro {
+        +ABIERTO : str$
+        +APROBADO : str$
+        +RECHAZADO : str$
+        -numero : int
+        -fecha : date
+        -descripcion : str
+        -monto_reclamado : float
+        -estado : str
+        +numero() int
+        +fecha() date
+        +descripcion() str
+        +monto_reclamado() float
+        +estado() str
+        +aprobar()
+        +rechazar()
+    }
+
+    class Pago {
+        -fecha : date
+        -monto : float
+        -periodo : str
+        +fecha() date
+        +monto() float
+        +periodo() str
+    }
+
+    %% Generalización (es-un): herencia simple
+    Poliza <|-- PolizaAuto
+    Poliza <|-- PolizaHogar
+    Poliza <|-- PolizaVida
+
+    %% Asociación y composiciones (tiene-un)
+    Cliente "1" -- "0..*" Poliza : contrata
+    Poliza "1" *-- "0..*" Siniestro : registra
+    Poliza "1" *-- "0..*" Pago : recibe
+
+    note for Cliente "edad es un atributo derivado:\nse calcula a partir de fecha_nacimiento"
+    note for Poliza "Clase base de la generalización.\nCada clase hija redefine calcular_prima,\ncalcular_indemnizacion y verDatos"
